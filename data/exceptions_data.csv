@@ -1,0 +1,81 @@
+description,exception_type
+"Tried to add a string and an integer together in a calculation",TypeError
+"Calling a non-callable object as if it were a function",TypeError
+"Passed the wrong number of arguments to a function call",TypeError
+"Attempted to iterate over a None value in a for loop",TypeError
+"Comparison between incompatible types in a conditional statement",TypeError
+"Object of type int is not iterable when used in a loop",TypeError
+"Function received an argument of completely unexpected type",TypeError
+"Cannot concatenate a list with a string directly",TypeError
+"Used a boolean value where a sequence was expected",TypeError
+"Subscript operator applied to an object that does not support it",TypeError
+"Converting a non-numeric string like hello to an integer",ValueError
+"math domain error when computing the square root of a negative number",ValueError
+"Invalid literal for int with base ten encountered during parsing",ValueError
+"Cannot unpack more values than the sequence contains",ValueError
+"Invalid date string format provided to the datetime parser",ValueError
+"Array shape does not match the expected dimensions for the operation",ValueError
+"Passing an empty sequence to a function that requires at least one element",ValueError
+"Value is outside the valid range accepted by the function",ValueError
+"Tried to convert a letter character directly into a float",ValueError
+"Timestamp string does not conform to the expected ISO format",ValueError
+"Accessing a dictionary with a key that was never inserted",KeyError
+"The key you are trying to look up is missing from the dictionary",KeyError
+"Trying to delete a key from a dict that does not exist",KeyError
+"JSON response is missing the expected field during parsing",KeyError
+"Configuration entry not found in the settings dictionary",KeyError
+"Cache lookup failed because the key expired or was never set",KeyError
+"Hash map does not contain an entry for the given identifier",KeyError
+"Environment variable name is not present in os.environ",KeyError
+"Attempting to retrieve a value by a key that was never stored",KeyError
+"Nested dictionary access failed at the second level key",KeyError
+"List index out of range when accessing the fifth element of a three-item list",IndexError
+"Tried to access an element beyond the length of the array",IndexError
+"Negative index goes further back than the beginning of the sequence",IndexError
+"Accessing the last element of an empty list causes failure",IndexError
+"Loop counter exceeded the bounds of the array during iteration",IndexError
+"Off-by-one error when reading the final element of a sequence",IndexError
+"Attempted to read row ten from a table that has only five rows",IndexError
+"Stack is empty but a pop operation was still called",IndexError
+"Tuple has three elements but index four was requested",IndexError
+"Slicing with a start index larger than the total list length",IndexError
+"Object does not have the method you are trying to call on it",AttributeError
+"NoneType object has no attribute strip when processing a string",AttributeError
+"Trying to access a property on a class that was never defined",AttributeError
+"Misspelled attribute name when accessing an object property",AttributeError
+"Called append on a variable that holds a string not a list",AttributeError
+"Accessing a length attribute on a plain integer value",AttributeError
+"Object was not initialized properly so its fields are missing",AttributeError
+"Trying to call a method that was removed in a newer library version",AttributeError
+"Instance attribute does not exist because __init__ was skipped",AttributeError
+"Module does not export the function being accessed as an attribute",AttributeError
+"The file path specified does not exist anywhere on the filesystem",FileNotFoundError
+"Trying to open a config file that was accidentally deleted",FileNotFoundError
+"Input CSV file is missing from the expected working directory",FileNotFoundError
+"Image file not found when loading it for processing",FileNotFoundError
+"Script could not locate the template file at the given path",FileNotFoundError
+"Log file target directory does not exist on the system",FileNotFoundError
+"Attempting to read a file that was never created",FileNotFoundError
+"Relative path resolves to a location where no file exists",FileNotFoundError
+"Model checkpoint file is absent from the saved models folder",FileNotFoundError
+"Audio file not found when initializing the media player",FileNotFoundError
+"Module not found because the package is not installed in the environment",ImportError
+"Cannot import a name from a module that does not define it",ImportError
+"Library dependency is missing from the current environment",ImportError
+"Circular import detected between two modules in the package",ImportError
+"Package version does not include the function you are importing",ImportError
+"Third party library not installed in the active virtual environment",ImportError
+"Wrong Python version installed for the module being imported",ImportError
+"Module was removed or renamed in the latest version of the library",ImportError
+"Typo in the import statement caused a module not found error",ImportError
+"Trying to import a private submodule that is not part of the public API",ImportError
+"Dividing a number by zero during a routine calculation",ZeroDivisionError
+"Modulo operation used zero as the divisor",ZeroDivisionError
+"Average calculation fails when the count variable is zero",ZeroDivisionError
+"Percentage calculation divides by a total that evaluates to zero",ZeroDivisionError
+"Computing rate of change when elapsed time is exactly zero",ZeroDivisionError
+"Float division by zero during a data normalization step",ZeroDivisionError
+"Ratio computation fails because the denominator is zero",ZeroDivisionError
+"Attempting to split cost equally among zero participants",ZeroDivisionError
+"Probability calculation fails when the sample size is zero",ZeroDivisionError
+"Normalizing a vector of all zeros results in division by zero",ZeroDivisionError

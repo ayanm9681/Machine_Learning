@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Syntax check
+        run: python -m py_compile app.py trainer.py
+
+      - name: Import check
+        run: |
+          python -c "
+          from trainer import (MODELS, train_and_evaluate, predict_all,
+                               train_predictor, generate_text, predict_next_topk)
+          print('All imports OK')
+          "
+
+      - name: Smoke test — classification
+        run: |
+          python -c "
+          import pandas as pd
+          from trainer import train_and_evaluate, MODELS
+
+          df = pd.read_csv('data/sample_data.csv')
+          results, _, y_test, _ = train_and_evaluate(
+              df, 'text', 'category', list(MODELS.keys()), test_size=0.2
+          )
+          for name, m in results.items():
+              assert m['F1 Score'] > 0, f'{name} F1 should be > 0'
+          print('Classification smoke test passed.')
+          "
+
+      - name: Smoke test — exception classification
+        run: |
+          python -c "
+          import pandas as pd
+          from trainer import train_and_evaluate, MODELS
+
+          df = pd.read_csv('data/exceptions_data.csv')
+          results, *_ = train_and_evaluate(
+              df, 'description', 'exception_type', list(MODELS.keys()), test_size=0.2
+          )
+          for name, m in results.items():
+              assert m['F1 Score'] > 0, f'{name} F1 should be > 0'
+          print('Exception classification smoke test passed.')
+          "
+
+      - name: Smoke test — next word prediction
+        run: |
+          python -c "
+          import pandas as pd
+          from trainer import train_predictor, generate_text, predict_next_topk, MODELS
+
+          corpus = pd.read_csv('data/prediction_corpus.csv')
+          results, pipes, _, _, stats = train_predictor(
+              corpus, 'text', list(MODELS.keys()), window_size=3, test_size=0.2
+          )
+          assert stats['total_pairs'] > 500, 'Expected > 500 n-gram pairs'
+          assert stats['vocab_size'] > 200, 'Expected vocab > 200'
+
+          out = generate_text(pipes, 'the morning sun', window_size=3, steps=5)
+          assert all(len(w) > 3 for w in out.values()), 'Each model should output > 3 words'
+
+          cands = predict_next_topk(pipes, 'the morning sun rises', window_size=3, top_k=3)
+          assert all(len(v) >= 1 for v in cands.values()), 'Each model should return candidates'
+
+          print('Next word prediction smoke test passed.')
+          "
+
+      - name: Docker build check
+        run: docker build --no-cache -t ml-text-lab:ci .
