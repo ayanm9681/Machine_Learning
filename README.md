@@ -1,5 +1,7 @@
 # ML Text Lab
 
+![ML Text Lab overview](ML_Text.gif)
+
 A lightweight, interactive machine learning workbench for experimenting with English text.
 Train five scikit-learn models side-by-side, compare their performance metrics, and explore
 two distinct NLP tasks — all from a Streamlit UI with no coding required.
