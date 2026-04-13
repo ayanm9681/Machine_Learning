@@ -1,6 +1,6 @@
-# ML Text Lab
+# LexiScope
 
-![ML Text Lab overview](ML_Text.gif)
+![LexiScope overview](ML_Text.gif)
 
 A lightweight, interactive machine learning workbench for experimenting with English text.
 Train five scikit-learn models side-by-side, compare their performance metrics, and explore
@@ -54,8 +54,8 @@ All five models are trained and compared simultaneously. Each uses TF-IDF vector
 ### Install and run
 
 ```bash
-git clone https://github.com/<your-username>/ml-text-lab.git
-cd ml-text-lab
+git clone https://github.com/<your-username>/lexiscope.git
+cd lexiscope
 
 pip install -r requirements.txt
 streamlit run app.py
@@ -66,8 +66,8 @@ Open [http://localhost:8501](http://localhost:8501) in your browser.
 ### Run with Docker
 
 ```bash
-docker build -t ml-text-lab .
-docker run -p 8501:8501 ml-text-lab
+docker build -t lexiscope .
+docker run -p 8501:8501 lexiscope
 ```
 
 Open [http://localhost:8501](http://localhost:8501) in your browser.
@@ -77,7 +77,7 @@ Open [http://localhost:8501](http://localhost:8501) in your browser.
 ## Project Structure
 
 ```
-ml-text-lab/
+lexiscope/
 ├── app.py                        # Streamlit UI — all pages and interactivity
 ├── trainer.py                    # ML logic — training, evaluation, prediction
 ├── requirements.txt

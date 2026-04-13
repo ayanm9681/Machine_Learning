@@ -12,8 +12,8 @@ from trainer import (MODELS, generate_text, predict_all, predict_next_topk,
                      train_and_evaluate, train_predictor)
 
 # ── Page config ────────────────────────────────────────────────────────────────
-st.set_page_config(page_title="ML Text Lab", layout="wide")
-st.title("ML Text Lab")
+st.set_page_config(page_title="LexiScope", layout="wide")
+st.title("LexiScope")
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -181,9 +181,13 @@ if mode == "Classification":
     st.success(f"Best model by F1: **{best}** — {results[best]['F1 Score']:.4f}")
 
     metric_cols = ["Accuracy", "Precision", "Recall", "F1 Score"]
+
+    def _bold_max(s):
+        return ["font-weight: 700" if v == s.max() else "" for v in s]
+
     st.dataframe(
         res_df.style
-        .highlight_max(subset=metric_cols, color="#e8e8e8")
+        .apply(_bold_max, subset=metric_cols)
         .format({c: "{:.4f}" for c in metric_cols}),
         use_container_width=True, hide_index=True,
     )
@@ -237,8 +241,8 @@ if mode == "Classification":
                 mode_class = pred_df["Predicted Class"].mode()[0]
 
                 def _hi(row):
-                    c = "#e0e0e0" if row["Predicted Class"] == mode_class else "#f5f5f5"
-                    return [f"background-color: {c}"] * len(row)
+                    weight = "font-weight: 700" if row["Predicted Class"] == mode_class else ""
+                    return ["", weight]
 
                 st.dataframe(pred_df.style.apply(_hi, axis=1),
                              use_container_width=True, hide_index=True)
@@ -322,9 +326,13 @@ else:
 
     num_cols = [c for c in p_res_df.columns if c != "Model" and p_res_df[c].apply(
         lambda x: isinstance(x, (int, float))).all()]
+
+    def _bold_max_pred(s):
+        return ["font-weight: 700" if v == s.max() else "" for v in s]
+
     st.dataframe(
         p_res_df.style
-        .highlight_max(subset=num_cols, color="#e8e8e8")
+        .apply(_bold_max_pred, subset=num_cols)
         .format({c: "{:.4f}" for c in num_cols}),
         use_container_width=True, hide_index=True,
     )

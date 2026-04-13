@@ -86,4 +86,4 @@ jobs:
           "
 
       - name: Docker build check
-        run: docker build --no-cache -t ml-text-lab:ci .
+        run: docker build --no-cache -t lexiscope:ci .
