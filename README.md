@@ -8,6 +8,26 @@ two distinct NLP tasks — all from a Streamlit UI with no coding required.
 
 ---
 
+## Architectural Trade-offs & Production Scaling
+
+> This project is intentionally minimal — built to demonstrate core ML concepts clearly.
+> The table below maps each known limitation to a concrete production remedy.
+
+| # | Area | Current (Lite) Limitation | Production Remedy |
+|---|---|---|---|
+| 1 | **Data scale** | Built-in datasets are tiny (80–195 rows). Small corpora cause unstable metrics and poor generalisation. | Replace with large labelled datasets (10 k–1 M+ rows). Use active learning or weak supervision to label data cheaply at scale. |
+| 2 | **Feature extraction** | TF-IDF discards word order and carries no semantic meaning. "Bank" the river and "bank" the institution are identical vectors. | Swap TF-IDF for pre-trained transformer embeddings (BERT, `sentence-transformers`). Fine-tune on domain data for best results. |
+| 3 | **Next-word prediction** | Sliding n-gram window fed into a classifier. Models loop on high-frequency words ("the the the…") and lack long-range context. | Use a proper autoregressive language model (GPT-2 fine-tuned, or an LLM via API). Even a lightweight LSTM/GRU outperforms n-gram classifiers significantly. |
+| 4 | **Model persistence** | Every browser session retrains from scratch. No artefacts are saved. | Serialise trained models and vectorisers with `joblib`/`pickle`. Store artefacts in object storage (S3, GCS). Load on startup; only retrain when data changes. |
+| 5 | **Experiment tracking** | Metrics are displayed once and lost on refresh. No run history or reproducibility. | Integrate MLflow or Weights & Biases to log every run, compare experiments, and version models. |
+| 6 | **Training blocks the UI** | `train_and_evaluate()` runs synchronously inside the Streamlit process, freezing the page for all users during training. | Move training to a background task queue (Celery + Redis, or a cloud ML job). Poll for results; display a live progress stream. |
+| 7 | **Single-process server** | Streamlit runs one Python process. Concurrent users share state and compete for CPU during training. | Decouple the UI from inference. Expose a FastAPI REST layer; containerise with Kubernetes and autoscale worker pods. |
+| 8 | **No data validation** | Any CSV is accepted. Malformed inputs, encoding issues, or extreme class imbalance silently degrade results. | Add a data validation layer (Great Expectations or Pydantic schemas) that checks schema, encoding, class distribution, and text length before training begins. |
+| 9 | **Class imbalance** | Datasets are balanced by design. Real-world data is rarely so. Accuracy becomes a misleading metric. | Apply SMOTE, class-weight penalties, or threshold tuning. Report macro-averaged metrics and per-class breakdowns alongside weighted scores. |
+| 10 | **No A/B or shadow testing** | The "best model" is selected by offline F1 alone. There is no mechanism to validate it on live traffic before promoting it. | Implement a shadow deployment: run the challenger model in parallel, compare predictions on real requests, and promote only after statistical significance is reached. |
+
+---
+
 ## Features
 
 ### Classification
