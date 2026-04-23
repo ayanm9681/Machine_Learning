@@ -1,4 +1,6 @@
+import io
 import os
+import pickle
 
 import matplotlib
 matplotlib.use("Agg")
@@ -76,6 +78,20 @@ with st.sidebar:
             clf_selected = [n for n, v in
                             {n: st.checkbox(n, value=True) for n in MODELS}.items() if v]
 
+        st.divider()
+        st.subheader("Save / Load")
+        clf_pkl = st.file_uploader("Load saved model (.pkl)", type="pkl", key="clf_pkl_upload")
+        if clf_pkl is not None:
+            try:
+                saved = pickle.load(clf_pkl)
+                st.session_state.update(
+                    clf_results=saved["results"], clf_pipes=saved["pipes"],
+                    clf_y_test=saved["y_test"], clf_y_preds=saved["y_preds"],
+                )
+                st.success("Model loaded — scroll down to see results.")
+            except Exception as e:
+                st.error(f"Failed to load: {e}")
+
     # ── Prediction sidebar ─────────────────────────────────────────────────────
     else:
         pred_source = st.radio("Corpus", ["Built-in corpus (200 passages)", "Upload CSV"])
@@ -109,6 +125,21 @@ with st.sidebar:
             pred_selected = [n for n, v in
                              {n: st.checkbox(n, value=True, key=f"p_{n}") for n in MODELS}.items()
                              if v]
+
+        st.divider()
+        st.subheader("Save / Load")
+        pred_pkl = st.file_uploader("Load saved model (.pkl)", type="pkl", key="pred_pkl_upload")
+        if pred_pkl is not None:
+            try:
+                saved = pickle.load(pred_pkl)
+                st.session_state.update(
+                    pred_results=saved["results"], pred_pipes=saved["pipes"],
+                    pred_y_test=saved["y_test"], pred_y_preds=saved["y_preds"],
+                    pred_stats=saved["stats"],
+                )
+                st.success("Model loaded — scroll down to see results.")
+            except Exception as e:
+                st.error(f"Failed to load: {e}")
 
 # ══════════════════════════════════════════════════════════════════════════════
 # CLASSIFICATION MODE
@@ -158,6 +189,14 @@ if mode == "Classification":
                 st.session_state.update(
                     clf_results=results, clf_pipes=pipes,
                     clf_y_test=y_test, clf_y_preds=y_preds,
+                )
+                buf = io.BytesIO()
+                pickle.dump({"results": results, "pipes": pipes,
+                             "y_test": y_test, "y_preds": y_preds}, buf)
+                st.download_button(
+                    "Download trained models (.pkl)", data=buf.getvalue(),
+                    file_name="clf_models.pkl", mime="application/octet-stream",
+                    key="clf_dl",
                 )
             except Exception as e:
                 st.error(f"Training failed: {e}")
@@ -289,6 +328,15 @@ else:
                     pred_results=p_results, pred_pipes=p_pipes,
                     pred_y_test=p_y_test, pred_y_preds=p_y_preds,
                     pred_stats=p_stats,
+                )
+                buf = io.BytesIO()
+                pickle.dump({"results": p_results, "pipes": p_pipes,
+                             "y_test": p_y_test, "y_preds": p_y_preds,
+                             "stats": p_stats}, buf)
+                st.download_button(
+                    "Download trained models (.pkl)", data=buf.getvalue(),
+                    file_name="pred_models.pkl", mime="application/octet-stream",
+                    key="pred_dl",
                 )
             except Exception as e:
                 st.error(f"Training failed: {e}")
